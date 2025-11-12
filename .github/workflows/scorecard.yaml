@@ -37,6 +37,14 @@ jobs:
           persist-credentials: false
           ref: refs/heads/${{ matrix.branch }}
 
+      - name: "Debug: Upload .github workflows dir"
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: debug-workflows-dir-${{ matrix.branch }}
+          path: .github/workflows/
+          if-no-files-found: warn
+          retention-days: 1          
+
       - name: "Run Scorecard analysis"
         uses: ossf/scorecard-action@05b42c624433fc40578a4040d5cf5e36ddca8cde # v2.4.2
         with:
@@ -52,14 +60,14 @@ jobs:
       #     mv scorecard-fs-scan-results-${{ matrix.branch }}-processed.sarif scorecard-fs-scan-results-${{ matrix.branch }}.sarif
 
       - name: "Upload Scorecard results as artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: scorecard-fs-scan-results-${{ matrix.branch }}
           path: scorecard-fs-scan-results-${{ matrix.branch }}.sarif
           retention-days: 5
 
       - name: "Upload scorecard results to GitHub's code scanning dashboard"
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@181d5eefc20863364f96762470ba6f862bdef56b # v3.29.2
         with:
           sarif_file: 'scorecard-fs-scan-results-${{ matrix.branch }}.sarif'
           ref: ${{ steps.checkout.outputs.ref }}
