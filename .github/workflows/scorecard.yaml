@@ -124,7 +124,9 @@ jobs:
       - name: Run Scorecard in local mode
         run: |
           echo "Running Scorecard in --local mode..."
-          scorecard --local --show-details --format=json --output=scorecard-results.json
+          echo "Current directory: $(pwd)"
+          echo "Current branch: $(git branch --show-current)"
+          scorecard --repo=. --local --show-details --format=json > scorecard-results.json
           echo "Results written to scorecard-results.json"
 
       - name: Upload results artifact
