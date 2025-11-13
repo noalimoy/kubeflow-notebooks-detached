@@ -115,9 +115,11 @@ jobs:
       - name: Install Scorecard CLI
         run: |
           echo "Installing Scorecard CLI via Go..."
-          go install github.com/ossf/scorecard/v5/cmd/scorecard@latest
+          go install github.com/ossf/scorecard/v4@latest
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-          scorecard version
+        
+      - name: Verify Scorecard installation
+        run: scorecard version
 
       - name: Run Scorecard in local mode
         run: |
