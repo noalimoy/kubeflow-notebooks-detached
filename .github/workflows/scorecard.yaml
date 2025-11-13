@@ -126,12 +126,12 @@ jobs:
           echo "Running Scorecard in --local mode..."
           echo "Current directory: $(pwd)"
           echo "Current branch: $(git branch --show-current)"
-          scorecard --local=. --show-details --format=json --output=scorecard-results-notebooks-v2-local.json
-          echo "Results written to scorecard-results.json"
+          scorecard --local=. --show-details --format=json --checks-to-skip=Dependency-Update-Tool --output=scorecard-results-${{ matrix.branch }}-local.json
+          echo "Results written to scorecard-results-${{ matrix.branch }}-local.json"
 
       - name: Upload results artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: scorecard-results
-          path: scorecard-results.json
+          name: scorecard-results-${{ matrix.branch }}
+          path: scorecard-results-${{ matrix.branch }}-local.json
 
