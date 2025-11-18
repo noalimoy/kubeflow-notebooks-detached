@@ -36,18 +36,9 @@ jobs:
         with:
           persist-credentials: false
           ref: refs/heads/${{ matrix.branch }}
-          fetch-depth: 0
-
-      - name: "Debug: Upload .github workflows dir"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: debug-workflows-dir-${{ matrix.branch }}
-          path: .github/workflows/
-          if-no-files-found: warn
-          retention-days: 1          
 
       - name: "Run Scorecard analysis"
-        uses: andyatmiami/scorecard-action@feat/source-input
+        uses: ossf/scorecard-action@05b42c624433fc40578a4040d5cf5e36ddca8cde # v2.4.2
         with:
           results_file: scorecard-fs-scan-results-${{ matrix.branch }}.sarif
           results_format: sarif
@@ -74,65 +65,3 @@ jobs:
           sarif_file: 'scorecard-fs-scan-results-${{ matrix.branch }}.sarif'
           ref: ${{ steps.checkout.outputs.ref }}
           sha: ${{ steps.checkout.outputs.commit }}
-
-
-
-
-#----------
-
-# name: Scorecard Local Mode Test
-
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       branch:
-#         description: 'Branch to scan'
-#         required: true
-#         default: 'notebooks-v2'
-#         type: choice
-#         options:
-#           - notebooks-v1
-#           - notebooks-v2
-
-# jobs:
-#   run-scorecard-local:
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         branch: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', github.event.inputs.branch)) || fromJSON('["notebooks-v1", "notebooks-v2"]') }}
-
-#     steps:
-#       - name: Checkout target branch
-#         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955  #v4.3.0
-#         with:
-#           ref: refs/heads/${{ matrix.branch }}
-#           fetch-depth: 0 
-
-#       - name: Setup Go
-#         uses: actions/setup-go@v5
-#         with:
-#           go-version: '1.22'
-          
-#       - name: Install Scorecard CLI
-#         run: |
-#           echo "Installing Scorecard CLI via Go..."
-#           go install github.com/ossf/scorecard/v4@latest
-#           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-        
-#       - name: Verify Scorecard installation
-#         run: scorecard version
-
-#       - name: Run Scorecard in local mode
-#         run: |
-#           echo "Running Scorecard in --local mode..."
-#           echo "Current directory: $(pwd)"
-#           echo "Current branch: $(git branch --show-current)"
-#           scorecard --local=. --show-details --format=json --checks-to-skip=Dependency-Update-Tool --output=scorecard-results-${{ matrix.branch }}-local.json
-#           echo "Results written to scorecard-results-${{ matrix.branch }}-local.json"
-
-#       - name: Upload results artifact
-#         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-#         with:
-#           name: scorecard-results-${{ matrix.branch }}
-#           path: scorecard-results-${{ matrix.branch }}-local.json
-
